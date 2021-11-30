@@ -1,0 +1,163 @@
+#include <gtest/gtest.h>
+
+#include "queue-2-stacks/Queue2Stacks_impl.h"
+
+template <typename ValTy>
+using Queue = queue::@QUEUE_TYPE@<ValTy>;
+
+TEST(QueueTest, DefaultConstructor) {
+  Queue<size_t> queue{};
+
+  EXPECT_EQ(queue.size(), 0);
+  EXPECT_TRUE(queue.empty());
+}
+
+TEST(QueueTest, Push) {
+  Queue<size_t> queue{};
+  for (size_t val = 0; val < 3; ++val) {
+    queue.push(val);
+    EXPECT_EQ(queue.front(), 0);
+  }
+}
+
+TEST(QueueTest, Front) {
+  const size_t data_sz{3};
+  size_t data[data_sz]{1, 2, 3};
+
+  Queue<size_t> queue{};
+  for (const auto& val : data) {
+    queue.push(val);
+  }
+
+  EXPECT_EQ(queue.front(), 1);
+  queue.front() = 4;
+  EXPECT_EQ(queue.front(), 4);
+}
+
+TEST(QueueTest, Pop) {
+  const size_t data_sz{3};
+  size_t data[data_sz]{1, 2, 3};
+  Queue<size_t> queue{};
+
+  for (const auto& val : data) {
+    queue.push(val);
+  }
+
+  for (const auto& val : data) {
+    EXPECT_EQ(queue.front(), val);
+    queue.pop();
+  }
+}
+
+TEST(QueueTest, Empty) {
+  Queue<size_t> queue{};
+  EXPECT_TRUE(queue.empty());
+
+  Queue<size_t> other_queue{};
+  queue = other_queue;
+  EXPECT_TRUE(queue.empty());
+
+  queue = Queue<size_t>{};
+  EXPECT_TRUE(queue.empty());
+}
+
+TEST(QueueTest, Size) {
+  {
+    const size_t data_sz{1};
+    size_t data[data_sz]{};
+
+    Queue<size_t> queue{};
+    for (const auto& val : data) {
+      queue.push(val);
+    }
+    EXPECT_EQ(queue.size(), data_sz);
+  }
+
+  {
+    const size_t data_sz{2};
+    size_t data[data_sz]{};
+
+    Queue<size_t> queue{};
+    for (const auto& val : data) {
+      queue.push(val);
+    }
+
+    EXPECT_EQ(queue.size(), data_sz);
+  }
+
+  {
+    const size_t data_sz{3};
+    size_t data[data_sz]{};
+
+    Queue<size_t> queue{};
+    for (const auto& val : data) {
+      queue.push(val);
+    }
+    EXPECT_EQ(queue.size(), data_sz);
+  }
+}
+
+TEST(QueueTest, CopyConstructor) {
+  const size_t data_sz{3};
+  size_t data[data_sz]{1, 2, 3};
+
+  Queue<size_t> other_queue{};
+  for (const auto& val : data) {
+    other_queue.push(val);
+  }
+
+  Queue<size_t> queue{other_queue};
+
+  EXPECT_EQ(queue.size(), other_queue.size());
+  ASSERT_TRUE(!queue.empty());
+}
+
+TEST(QueueTest, MoveConstructor) {
+  const size_t data_sz{3};
+  size_t data[data_sz]{1, 2, 3};
+
+  Queue<size_t> other_queue{};
+  for (const auto& val : data) {
+    other_queue.push(val);
+  }
+  Queue<size_t> other_queue_cp{other_queue};
+
+  Queue<size_t> queue{std::move(other_queue)};
+
+  EXPECT_EQ(queue.size(), data_sz);
+  ASSERT_TRUE(!queue.empty());
+}
+
+TEST(QueueTest, CopyAssignmentOperator) {
+  const size_t data_sz = 3;
+  size_t data[data_sz]{1, 2, 3};
+
+  Queue<size_t> other_queue{};
+  for (const auto& val : data) {
+    other_queue.push(val);
+  }
+
+  Queue<size_t> queue{};
+  queue = other_queue;
+
+  EXPECT_EQ(queue.size(), other_queue.size());
+  ASSERT_TRUE(!queue.empty());
+}
+
+TEST(QueueTest, MoveAssignmentOperator) {
+  const size_t data_sz{3};
+  size_t data[data_sz]{1, 2, 3};
+
+  Queue<size_t> other_queue{};
+  for (const auto& val : data) {
+    other_queue.push(val);
+  }
+
+  Queue<size_t> other_queue_cp{other_queue};
+
+  Queue<size_t> queue{};
+  queue = std::move(other_queue);
+
+  EXPECT_EQ(queue.size(), data_sz);
+  ASSERT_TRUE(!queue.empty());
+}
